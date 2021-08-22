@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-#include "image_util/image.h"
-#include "image_util/bmp.h"
-#include "util/byte_helper.h"
+#include "image.h"
+#include "bmp.h"
+#include "byte_helper.h"
 
 #define BLANK 64 // ASCII @ symbol
 
