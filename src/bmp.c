@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 #include "image.h"
 #include "byte_helper.h"
@@ -43,9 +44,9 @@ void read_bmp(struct Image *bmp_image) {
 
     // Logging
     printf("Offset: %i\n", offset);
-    printf("Width: %i\n", bmp_image->height);
+    printf("Width: %i\n", bmp_image->width);
     printf("Height: %i\n", bmp_image->height);
-    printf("Pixel Width: %i\n", bmp_image->pixel_width);
+    printf("Bytes per pixel: %i\n", bmp_image->pixel_width);
 
     // Accessing and storing pixels
     unsigned char pixel[bmp_image->pixel_width];
@@ -89,36 +90,28 @@ void write_bmp(struct Image image) {
     fputc(0x4D, file);
     // Placehold for size of BMP file
     fputc(0x55, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
+    fputc(0x0F, file);
+    write_blank_bytes(2, file);
     // Reserved
-    fputc(0x00, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
+    write_blank_bytes(4, file);
     // Offset of pixel array (aka bmp data)
     fputc(0x36, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
+    write_blank_bytes(3, file);
 
     /*
     * BMP Info Header
     */
     // Info Header size (40 bytes)
     fputc(0x28, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
+    write_blank_bytes(3, file);
     // Width
     // TODO: Probably could move this to byte_helper
     // TODO: Check if system is big or little endian
-    for(int i = INT_SIZE; i > 0; i--) {
+    for(int i = INT_BYTE_SIZE; i > 0; i--) {
         fputc(image.width >> i * 8 & 0xFF, file);
     }
     // Height
-    for(int i = INT_SIZE; i > 0; i--) {
+    for(int i = INT_BYTE_SIZE; i > 0; i--) {
         fputc(image.height >> i * 8 & 0xFF, file);
     }
     // TODO: Probably could move this to byte_helper
@@ -130,46 +123,38 @@ void write_bmp(struct Image image) {
     fputc(0x18, file);
     fputc(0x00, file);
     // Compression (None used)
-    fputc(0x00, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
+    write_blank_bytes(4, file);
     // Image size (only set if compression is enabled)
-    fputc(0x00, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
+    write_blank_bytes(4, file);
     // Horizontal resolution
     fputc(0x23, file);  // idk what the significance of these values is
     fputc(0x2E, file);  // but it's what's used in bmps made in gimp
-    fputc(0x00, file);
-    fputc(0x00, file);
+    write_blank_bytes(2, file);
     // Vertical resolution
     fputc(0x23, file);
     fputc(0x2E, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
+    write_blank_bytes(2, file);
     // Colors used (16M for 24 bit)
     fputc(0x00, file);
     fputc(0x24, file);
     fputc(0xF4, file);
     fputc(0x00, file);
     // Important Colors
-    fputc(0x00, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
-    fputc(0x00, file);
+    write_blank_bytes(4, file);
 
     /*
     * Image data
     */
+    int pixel_row_size = image.width * image.pixel_width;
+    int padding_size = ceil(pixel_row_size * BYTE_SIZE / 32.0) * 4 - pixel_row_size;
+
     for (int i = 0; i < image.width; i++) {
         for (int j = 0; j < image.height; j++) {
             for (int k = 0; k < 3; k++) {
                 fputc(image.pixel_array[i][j][k], file);
             }
         }
+        write_blank_bytes(padding_size, file);
     }
-
     fclose(file);
 }

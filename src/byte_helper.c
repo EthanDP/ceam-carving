@@ -65,3 +65,9 @@ void printx(char bytes[], int size, int mode) {
         }
     }
 }
+
+void write_blank_bytes(int total_bytes, FILE *file) {
+    for (int i = 0; i < total_bytes; i++) {
+        fputc(0x00, file);
+    }
+}

@@ -5,7 +5,7 @@ CFLAGS = -I$(IDIR)
 ODIR = obj
 LDIR = lib
 
-LIBS =
+LIBS = -lm
 
 _DEPS = bmp.h byte_helper.h image.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
