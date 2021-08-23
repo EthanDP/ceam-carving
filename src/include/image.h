@@ -3,11 +3,15 @@
 #ifndef IMAGE_HEADER
 #define IMAGE_HEADER
 
+#define NO_ERROR 0
+#define INVALID_FILENAME 1
+
 struct Image {
-    FILE *image_data;
+    FILE *image_file;
     int width;
     int height;
     int pixel_width;
+    int error_code;
     unsigned char*** pixel_array;
 };
 

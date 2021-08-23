@@ -4,7 +4,7 @@
 #include "image.h"
 #include "byte_helper.h"
 
-void read_bmp(struct Image bmp_image) {
+void read_bmp(struct Image *bmp_image) {
     /*
     * Reads a bmp bmp_image and stores width, height, and pixel data
     * in an Image struct.
@@ -12,7 +12,7 @@ void read_bmp(struct Image bmp_image) {
     * bmp_image: an Image struct containing a file
     */
     
-    FILE *bmp_data = bmp_image.image_data;
+    FILE *bmp_data = bmp_image->image_file;
 
     fseek(bmp_data, 10, SEEK_SET);
     unsigned char offset_hex[4];
@@ -27,57 +27,149 @@ void read_bmp(struct Image bmp_image) {
     unsigned char hex_height[4];
     fread(hex_height, sizeof(hex_height), 1, bmp_data);
 
-    bmp_image.width = bytes_to_int(hex_width, sizeof(hex_width), LE);
-    bmp_image.height = bytes_to_int(hex_height, sizeof(hex_height), LE);
+    bmp_image->width = bytes_to_int(hex_width, sizeof(hex_width), LE);
+    bmp_image->height = bytes_to_int(hex_height, sizeof(hex_height), LE);
 
     // TODO: Modify pixel width based off of header
-    bmp_image.pixel_width = 3;
+    bmp_image->pixel_width = 3;
 
     int padding;
     
-    if (bmp_image.width % 4 == 0) {
+    if (bmp_image->width % 4 == 0) {
         padding = 0;
     } else {
-        padding = 4 - ((bmp_image.width * 3) % 4); 
+        padding = 4 - ((bmp_image->width * 3) % 4); 
     }
 
     // Logging
     printf("Offset: %i\n", offset);
-    printf("Width: %i\n", bmp_image.height);
-    printf("Height: %i\n", bmp_image.height);
-    printf("Pixel Width: %i\n", bmp_image.pixel_width);
+    printf("Width: %i\n", bmp_image->height);
+    printf("Height: %i\n", bmp_image->height);
+    printf("Pixel Width: %i\n", bmp_image->pixel_width);
 
     // Accessing and storing pixels
-
-    unsigned char pixel[bmp_image.pixel_width];
+    unsigned char pixel[bmp_image->pixel_width];
 
     fseek(bmp_data, offset, SEEK_SET);
-    bmp_image.pixel_array = malloc(bmp_image.width * sizeof(unsigned char));
+    bmp_image->pixel_array = malloc(bmp_image->width * sizeof(unsigned char));
 
-    for (int i = 0; i < bmp_image.width; i++) {
-        bmp_image.pixel_array[i] = malloc(bmp_image.height * sizeof(unsigned char));
+    for (int i = 0; i < bmp_image->width; i++) {
+        bmp_image->pixel_array[i] = malloc(bmp_image->height * sizeof(unsigned char));
 
-        for (int j = 0; j < bmp_image.height; j++) {
-            bmp_image.pixel_array[i][j] = malloc(bmp_image.pixel_width * sizeof(unsigned char));
+        for (int j = 0; j < bmp_image->height; j++) {
+            bmp_image->pixel_array[i][j] = malloc(bmp_image->pixel_width * sizeof(unsigned char));
             fread(pixel, sizeof(pixel), 1, bmp_data);
-            printx(pixel, sizeof(pixel), LE);
-            printf("\n");
 
             // TODO: Modify for different size bmp pixels (16 bit, 8bit, etc.)
-            for (int k = 0; k < bmp_image.pixel_width; k++) {
-                bmp_image.pixel_array[i][j][k] = pixel[k];
+            for (int k = 0; k < bmp_image->pixel_width; k++) {
+                bmp_image->pixel_array[i][j][k] = pixel[k];
             }
         }
 
         fseek(bmp_data, padding, SEEK_CUR);
     }
+
+    fclose(bmp_image->image_file);
 }
 
 void write_bmp(struct Image image) {
     /*
-    * Writes to a specified file a bmp bmp_image.
+    * Writes to a specified file the contents of bmp_image.
     *
     * bmp_image: an Image struct containing information about the bmp_image to write
     */
-    printf("Writing");
+    FILE *file;
+    file = fopen("result.bmp", "wb");
+
+    /*
+    * BMP File Header
+    */
+    // Writes the default header field used to identify a bmp
+    fputc(0x42, file);
+    fputc(0x4D, file);
+    // Placehold for size of BMP file
+    fputc(0x55, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    // Reserved
+    fputc(0x00, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    // Offset of pixel array (aka bmp data)
+    fputc(0x36, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+
+    /*
+    * BMP Info Header
+    */
+    // Info Header size (40 bytes)
+    fputc(0x28, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    // Width
+    // TODO: Probably could move this to byte_helper
+    // TODO: Check if system is big or little endian
+    for(int i = INT_SIZE; i > 0; i--) {
+        fputc(image.width >> i * 8 & 0xFF, file);
+    }
+    // Height
+    for(int i = INT_SIZE; i > 0; i--) {
+        fputc(image.height >> i * 8 & 0xFF, file);
+    }
+    // TODO: Probably could move this to byte_helper
+    // TODO: Check if system is big or little endian
+    // Number of planes (should always be 1)
+    fputc(0x01, file);
+    fputc(0x00, file);
+    // Bits per pixel
+    fputc(0x18, file);
+    fputc(0x00, file);
+    // Compression (None used)
+    fputc(0x00, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    // Image size (only set if compression is enabled)
+    fputc(0x00, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    // Horizontal resolution
+    fputc(0x23, file);  // idk what the significance of these values is
+    fputc(0x2E, file);  // but it's what's used in bmps made in gimp
+    fputc(0x00, file);
+    fputc(0x00, file);
+    // Vertical resolution
+    fputc(0x23, file);
+    fputc(0x2E, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    // Colors used (16M for 24 bit)
+    fputc(0x00, file);
+    fputc(0x24, file);
+    fputc(0xF4, file);
+    fputc(0x00, file);
+    // Important Colors
+    fputc(0x00, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+    fputc(0x00, file);
+
+    /*
+    * Image data
+    */
+    for (int i = 0; i < image.width; i++) {
+        for (int j = 0; j < image.height; j++) {
+            for (int k = 0; k < 3; k++) {
+                fputc(image.pixel_array[i][j][k], file);
+            }
+        }
+    }
+
+    fclose(file);
 }

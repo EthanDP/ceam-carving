@@ -12,6 +12,20 @@ int compare_filetype(char input[], char filetype[]) {
     return 1;
 }
 
+int compare_string(char *string1[], char *string2[]) {
+    if (sizeof(*string1) != sizeof(*string2)) {
+        return 0;
+    }
+
+    for (int i = 0; i < sizeof(*string1); i++) {
+        if (string1[i] != string2[i]) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 int bytes_to_int(char bytes[], int size, int mode) {
     // Mode 0 = Little Endian, Mode 1 = Big Endian
 
