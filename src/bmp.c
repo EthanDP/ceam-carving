@@ -50,25 +50,29 @@ void read_bmp(struct Image *bmp_image) {
 
     // Accessing and storing pixels
     unsigned char pixel[bmp_image->pixel_width];
+    int array_size = 0;
 
     fseek(bmp_data, offset, SEEK_SET);
-    bmp_image->pixel_array = malloc(bmp_image->width * sizeof(unsigned char));
+    bmp_image->pixel_array = malloc(bmp_image->width * sizeof(*bmp_image->pixel_array));
 
     for (int i = 0; i < bmp_image->width; i++) {
-        bmp_image->pixel_array[i] = malloc(bmp_image->height * sizeof(unsigned char));
+        bmp_image->pixel_array[i] = malloc(bmp_image->height * sizeof(*bmp_image->pixel_array[i]));
 
         for (int j = 0; j < bmp_image->height; j++) {
-            bmp_image->pixel_array[i][j] = malloc(bmp_image->pixel_width * sizeof(unsigned char));
+            bmp_image->pixel_array[i][j] = malloc(bmp_image->pixel_width * sizeof(*bmp_image->pixel_array[i][j]));
             fread(pixel, sizeof(pixel), 1, bmp_data);
 
             // TODO: Modify for different size bmp pixels (16 bit, 8bit, etc.)
             for (int k = 0; k < bmp_image->pixel_width; k++) {
                 bmp_image->pixel_array[i][j][k] = pixel[k];
+                array_size++;
             }
         }
 
         fseek(bmp_data, padding, SEEK_CUR);
     }
+
+    bmp_image->array_size = array_size;
 
     fclose(bmp_image->image_file);
 }
@@ -89,9 +93,11 @@ void write_bmp(struct Image image) {
     fputc(0x42, file);
     fputc(0x4D, file);
     // Placehold for size of BMP file
-    fputc(0x55, file);
-    fputc(0x0F, file);
-    write_blank_bytes(2, file);
+    int size = image.array_size + 54;
+    printf("SIZE: %i", size);
+    for(int i = INT_BYTE_SIZE; i > 0; i--) {
+        fputc(size >> i * 8 & 0xFF, file);
+    }
     // Reserved
     write_blank_bytes(4, file);
     // Offset of pixel array (aka bmp data)
@@ -147,10 +153,9 @@ void write_bmp(struct Image image) {
     */
     int pixel_row_size = image.width * image.pixel_width;
     int padding_size = ceil(pixel_row_size * BYTE_SIZE / 32.0) * 4 - pixel_row_size;
-
     for (int i = 0; i < image.width; i++) {
         for (int j = 0; j < image.height; j++) {
-            for (int k = 0; k < 3; k++) {
+            for (int k = 0; k < image.pixel_width; k++) {
                 fputc(image.pixel_array[i][j][k], file);
             }
         }
