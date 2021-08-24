@@ -93,10 +93,9 @@ void write_bmp(struct Image image) {
     fputc(0x42, file);
     fputc(0x4D, file);
     // Placehold for size of BMP file
-    int size = image.array_size + 54;
-    printf("SIZE: %i", size);
-    for(int i = INT_BYTE_SIZE; i > 0; i--) {
-        fputc(size >> i * 8 & 0xFF, file);
+    unsigned int size = image.array_size + 54;
+    for(int i = 0; i < INT_BYTE_SIZE; i++) {
+        fputc((size >> (i * 8)) & 0xFF, file);
     }
     // Reserved
     write_blank_bytes(4, file);
@@ -113,11 +112,11 @@ void write_bmp(struct Image image) {
     // Width
     // TODO: Probably could move this to byte_helper
     // TODO: Check if system is big or little endian
-    for(int i = INT_BYTE_SIZE; i > 0; i--) {
+    for(int i = 0; i < INT_BYTE_SIZE; i++) {
         fputc(image.width >> i * 8 & 0xFF, file);
     }
     // Height
-    for(int i = INT_BYTE_SIZE; i > 0; i--) {
+    for(int i = 0; i < INT_BYTE_SIZE; i++) {
         fputc(image.height >> i * 8 & 0xFF, file);
     }
     // TODO: Probably could move this to byte_helper
