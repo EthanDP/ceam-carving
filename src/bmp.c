@@ -3,7 +3,7 @@
 #include <math.h>
 
 #include "image.h"
-#include "byte_helper.h"
+#include "byte_util.h"
 
 void read_bmp(struct Image *bmp_image) {
     /*

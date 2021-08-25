@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "byte_helper.h"
+#include "byte_util.h"
 
 int compare_filetype(char input[], char filetype[]) {
     for (int i = 0; i < FILETYPE_LENGTH; i++) {

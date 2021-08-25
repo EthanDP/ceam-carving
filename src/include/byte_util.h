@@ -1,5 +1,5 @@
-#ifndef BYTE_HELPER_HEADER
-#define BYTE_HELPER_HEADER
+#ifndef BYTE_UTIL_HEADER
+#define BYTE_UTIL_HEADER
 
 #define FILETYPE_LENGTH 4
 #define LE 0
