@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "string.h": "c",
-        "image_util.h": "c"
+        "image_util.h": "c",
+        "kernels.h": "c"
     }
 }

@@ -3,16 +3,7 @@
 
 #include "byte_util.h"
 
-int compare_filetype(char input[], char filetype[]) {
-    for (int i = 0; i < FILETYPE_LENGTH; i++) {
-        if (input[i] != filetype[i]) {
-            return 0;
-        }
-    }
-    return 1;
-}
-
-int compare_string(char *string1[], char *string2[]) {
+int compare_string(char string1[], char string2[]) {
     if (sizeof(*string1) != sizeof(*string2)) {
         return 0;
     }

@@ -38,10 +38,10 @@ struct Image open_image(char filename[], int size) {
         }
     }
 
-    if (compare_filetype(extension, "@bmp")) {
+    if (compare_string(extension, "@bmp")) {
         read_bmp(&image);
     } else {
-        printf("Invalid file type");
+        printf("Invalid file type.");
     }
 
     return image;
@@ -49,5 +49,8 @@ struct Image open_image(char filename[], int size) {
 
 void write_image(struct Image image, char filetype[]) {
     // TODO: Check for different filetypes and call specific function accordingly
-    write_bmp(image);
+    if (compare_string(filetype, "bmp")) {
+        write_bmp(image);
+    } 
+    // TODO: Add output checking to main.c so invalid output filetypes can't be used
 }

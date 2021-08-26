@@ -7,10 +7,10 @@ LDIR = lib
 
 LIBS = -lm
 
-_DEPS = bmp.h byte_util.h image.h image_util.h
+_DEPS = bmp.h byte_util.h image.h image_util.h kernel.h
 DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 
-_OBJ = main.o bmp.o byte_util.o image_util.o
+_OBJ = main.o bmp.o byte_util.o image_util.o blur.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 
