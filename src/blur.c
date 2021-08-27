@@ -3,17 +3,38 @@
 #include "image.h"
 #include "kernel.h"
 
-void blur (struct Image image) {
+Kernel create_blur_kernel();
+
+void blur (struct Image *image) {
+    /*
+    *   Gaussian blur
+    */
+
+    Kernel blur_kernel = create_blur_kernel();
+
+    for (int i = 0; i < image->width; i++) {
+        for (int j = 0; j < image->height; j++) {
+            for (int k = 0; k < image->pixel_width; k++) {
+                //TODO: logic for applying a kernel to image :(
+            }
+        }
+    }
+}
+
+Kernel create_blur_kernel() {
     /*
     *   Gaussian blur
     */
 
     Kernel gaussian_kernel;
-    gaussian_kernel.kernel_array = malloc(3 * sizeof(*gaussian_kernel.kernel_array));
+    gaussian_kernel.kernel_size = 3;
+    gaussian_kernel.kernel_array = malloc(gaussian_kernel.kernel_size * sizeof(*gaussian_kernel.kernel_array));
     for (int i = 0; i < 3; i++) {
-        gaussian_kernel.kernel_array[i] = malloc(sizeof(*gaussian_kernel.kernel_array[i]));
-        for (int j = 0; j < 3; j++) {
+        gaussian_kernel.kernel_array[i] = malloc(sizeof(double));
+        for (int j = 0; j < gaussian_kernel.kernel_size; j++) {
             gaussian_kernel.kernel_array[i][j] = .1;
         }
     }
+
+    return gaussian_kernel;
 }

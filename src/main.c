@@ -3,6 +3,7 @@
 
 #include "image.h"
 #include "image_util.h"
+#include "blur.h"
 
 int main(int argc, char *argv[]) {
     if (argc == 2) {
@@ -12,6 +13,7 @@ int main(int argc, char *argv[]) {
             printf("ERROR: File does not exist.\n");
             return 0;
         } else {
+            blur(&image);
             write_image(image, "bmp");
         }
     } else if (argc > 2) {
