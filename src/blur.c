@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "image.h"
+#include "image_util.h"
 #include "kernel.h"
 
 Kernel create_blur_kernel();
@@ -12,6 +13,12 @@ void blur (struct Image *image) {
 
     Kernel blur_kernel = create_blur_kernel();
 
+    struct Image temp;
+
+    copy_image(&temp, *image);
+
+    printf("Here's the new width: %i", temp.width);
+
     for (int i = 0; i < image->width; i++) {
         for (int j = 0; j < image->height; j++) {
             for (int k = 0; k < image->pixel_width; k++) {
@@ -19,6 +26,8 @@ void blur (struct Image *image) {
             }
         }
     }
+
+    free_image(&temp);
 }
 
 Kernel create_blur_kernel() {

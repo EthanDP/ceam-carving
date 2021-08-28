@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "image.h"
 #include "image_util.h"
@@ -53,4 +54,35 @@ void write_image(struct Image image, char filetype[]) {
         write_bmp(image);
     } 
     // TODO: Add output checking to main.c so invalid output filetypes can't be used
+}
+
+void copy_image(struct Image *copy, struct Image original) {
+    copy->width = original.width;
+    copy->height = original.height;
+    copy->pixel_width = original.pixel_width;
+    copy->pixel_array = malloc(copy->width * sizeof(*copy->pixel_array));
+
+    for (int i = 0; i < copy->width; i++) {
+        copy->pixel_array[i] = malloc(copy->height * sizeof(*copy->pixel_array[i]));
+
+        for (int j = 0; j < copy->height; j++) {
+            copy->pixel_array[i][j] = malloc(copy->pixel_width * sizeof(*copy->pixel_array[i][j]));
+
+            for (int k = 0; k < copy->pixel_width; k++) {
+                copy->pixel_array[i][j][k] = original.pixel_array[i][j][k];
+            }
+        }
+    }
+}
+
+void free_image(struct Image *image) {
+    for (int i = 0; i < image->width; i++) {
+        for (int j = 0; j < image->height; i++) {
+            for (int k = 0; k < image->pixel_width; k++) {
+                free(&image->pixel_array[i][j][k]);
+            }
+            free(image->pixel_array[i][j]);
+        }
+        free(image->pixel_array[i]);
+    }
 }
