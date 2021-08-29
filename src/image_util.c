@@ -77,12 +77,10 @@ void copy_image(struct Image *copy, struct Image original) {
 
 void free_image(struct Image *image) {
     for (int i = 0; i < image->width; i++) {
-        for (int j = 0; j < image->height; i++) {
-            for (int k = 0; k < image->pixel_width; k++) {
-                free(&image->pixel_array[i][j][k]);
-            }
+        for(int j = 0; j < image->height; j++) {
             free(image->pixel_array[i][j]);
         }
         free(image->pixel_array[i]);
     }
+    free(image->pixel_array);
 }

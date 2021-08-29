@@ -17,8 +17,6 @@ void blur (struct Image *image) {
 
     copy_image(&temp, *image);
 
-    printf("Here's the new width: %i", temp.width);
-
     for (int i = 0; i < image->width; i++) {
         for (int j = 0; j < image->height; j++) {
             for (int k = 0; k < image->pixel_width; k++) {

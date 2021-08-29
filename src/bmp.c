@@ -49,7 +49,8 @@ void read_bmp(struct Image *bmp_image) {
     printf("Bytes per pixel: %i\n", bmp_image->pixel_width);
 
     // Accessing and storing pixels
-    unsigned char pixel[bmp_image->pixel_width];
+    unsigned char *pixel;
+    pixel = malloc(bmp_image->pixel_width * sizeof(unsigned char));
     int array_size = 0;
 
     fseek(bmp_data, offset, SEEK_SET);
