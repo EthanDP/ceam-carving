@@ -75,6 +75,7 @@ void read_bmp(struct Image *bmp_image) {
 
     bmp_image->array_size = array_size;
 
+    free(pixel);
     fclose(bmp_image->image_file);
 }
 
