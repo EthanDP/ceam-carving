@@ -1,2 +1,9 @@
 # Ceam Carving
-An minimal implementation of image seam carving written in C with no dependencies (other than standard libraries).
+A command line tool for performing basic image processing actions such as bluring, sharpening, seam carving, converting images, and more.
+
+## Currently Implemented Features
+* Support for 24 bit bmp images
+* Partial support for bluring images
+
+## How to use
+Coming soon
