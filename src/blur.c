@@ -18,13 +18,17 @@ void blur (struct Image *image) {
     struct Image temp;
     copy_image(&temp, *image);
 
+    double *new_pixel;
+    new_pixel = malloc(image->pixel_width * sizeof(double));
+
+    unsigned char new_byte;
+
     // These first two loops iterate over evey pixel in the original image
     for (int i = 0; i < image->width; i++) {
         for (int j = 0; j < image->height; j++) {
 
-            // This loop resets the pixel byte array
-            for (int pixel_idx = 0; pixel_idx < image->pixel_width; pixel_idx++) {
-                image->pixel_array[i][j][pixel_idx] = 0;
+            for (int pixel_idx = 0; pixel_idx < sizeof(new_pixel); pixel_idx++) {
+                new_pixel[pixel_idx] = 0.0;
             }
 
             // These two loops iterate over each position in the kernel
@@ -37,13 +41,20 @@ void blur (struct Image *image) {
                             // This line is horrible but it multiplies a pixel byte value by the corresponding
                             // kernel value and adds it to the pixel value
                             //printf("Current pixel value: %i\n", temp.pixel_array[i - (i2 - 1)][j - (j2 - 1)][k]);
-                            image->pixel_array[i][j][k] += (unsigned char)(temp.pixel_array[i - (i2 - 1)][j - (j2 - 1)][k] * blur_kernel.kernel_array[i2][j2]);
+                            new_pixel[k] += temp.pixel_array[i - (i2 - 1)][j - (j2 - 1)][k] * blur_kernel.kernel_array[i2][j2];
+                        } else {
+                            new_pixel[k] += temp.pixel_array[i][j][k] * blur_kernel.kernel_array[i2][j2];
                         }
+
+                        //printf("New value: %f\n", blur_kernel.kernel_array[i2][j2]);
                     }
                 }
             }
 
-
+            for (int pixel_byte = 0; pixel_byte < image->pixel_width; pixel_byte++) {
+                new_byte = (unsigned char) new_pixel[pixel_byte];
+                image->pixel_array[i][j][pixel_byte] = new_byte;
+            }
         }
     }
 
@@ -58,10 +69,14 @@ Kernel create_blur_kernel() {
     Kernel gaussian_kernel;
     gaussian_kernel.kernel_size = 3;
     gaussian_kernel.kernel_array = malloc(gaussian_kernel.kernel_size * sizeof(*gaussian_kernel.kernel_array));
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < gaussian_kernel.kernel_size; i++) {
         gaussian_kernel.kernel_array[i] = malloc(sizeof(double));
         for (int j = 0; j < gaussian_kernel.kernel_size; j++) {
-            gaussian_kernel.kernel_array[i][j] = .1;
+            if (i == 1 && j == 1) {
+                gaussian_kernel.kernel_array[i][j] = .4;
+            } else {
+                gaussian_kernel.kernel_array[i][j] = .075;
+            }
         }
     }
 

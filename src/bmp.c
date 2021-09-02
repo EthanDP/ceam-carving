@@ -39,7 +39,7 @@ void read_bmp(struct Image *bmp_image) {
     if (bmp_image->width % 4 == 0) {
         padding = 0;
     } else {
-        padding = 4 - ((bmp_image->width * 3) % 4); 
+        padding = 4 - ((bmp_image->width * bmp_image->pixel_width) % 4); 
     }
 
     // Logging
@@ -61,7 +61,7 @@ void read_bmp(struct Image *bmp_image) {
 
         for (int j = 0; j < bmp_image->height; j++) {
             bmp_image->pixel_array[i][j] = malloc(bmp_image->pixel_width * sizeof(*bmp_image->pixel_array[i][j]));
-            fread(pixel, sizeof(pixel), 1, bmp_data);
+            fread(pixel, sizeof(unsigned char), 3, bmp_data);
 
             // TODO: Modify for different size bmp pixels (16 bit, 8bit, etc.)
             for (int k = 0; k < bmp_image->pixel_width; k++) {
@@ -152,15 +152,21 @@ void write_bmp(struct Image image) {
     /*
     * Image data
     */
-    int pixel_row_size = image.width * image.pixel_width;
-    int padding_size = ceil(pixel_row_size * BYTE_SIZE / 32.0) * 4 - pixel_row_size;
+    int padding;
+    
+    if (image.width % 4 == 0) {
+        padding = 0;
+    } else {
+        padding = 4 - ((image.width * image.pixel_width) % 4); 
+    }
+    
     for (int i = 0; i < image.width; i++) {
         for (int j = 0; j < image.height; j++) {
             for (int k = 0; k < image.pixel_width; k++) {
                 fputc(image.pixel_array[i][j][k], file);
             }
         }
-        write_blank_bytes(padding_size, file);
+        write_blank_bytes(padding, file);
     }
     fclose(file);
 }
