@@ -6,12 +6,14 @@
 
 Kernel create_blur_kernel();
 
-void blur (struct Image *image) {
+void blur (struct Image *image, int strength) {
     /*
     *   Gaussian blur
     */
 
-    Kernel blur_kernel = create_blur_kernel();
+    printf("Bluring image with strength %i...\n", strength);
+
+    Kernel blur_kernel = create_blur_kernel(strength);
 
     // This image copy will be used to get original pixel values
     // and will not be modified.
@@ -61,10 +63,12 @@ void blur (struct Image *image) {
     free_image(&temp);
 }
 
-Kernel create_blur_kernel() {
+Kernel create_blur_kernel(int strength) {
     /*
     *   Gaussian blur
     */
+
+    printf("Generating blur kernel...\n");
 
     Kernel gaussian_kernel;
     gaussian_kernel.kernel_size = 3;

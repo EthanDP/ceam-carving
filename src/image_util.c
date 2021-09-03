@@ -48,11 +48,13 @@ struct Image open_image(char filename[], int size) {
     return image;
 }
 
-void write_image(struct Image image, char filetype[]) {
+void write_image(struct Image *image, char filetype[]) {
     // TODO: Check for different filetypes and call specific function accordingly
     if (compare_string(filetype, "bmp")) {
         write_bmp(image);
     } 
+
+    free_image(image);
     // TODO: Add output checking to main.c so invalid output filetypes can't be used
 }
 

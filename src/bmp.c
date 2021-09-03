@@ -14,6 +14,7 @@ void read_bmp(struct Image *bmp_image) {
     */
     
     FILE *bmp_data = bmp_image->image_file;
+    printf("Reading bmp image to memory...\n");
 
     fseek(bmp_data, 10, SEEK_SET);
     unsigned char offset_hex[4];
@@ -41,12 +42,6 @@ void read_bmp(struct Image *bmp_image) {
     } else {
         padding = 4 - ((bmp_image->width * bmp_image->pixel_width) % 4); 
     }
-
-    // Logging
-    printf("Offset: %i\n", offset);
-    printf("Width: %i\n", bmp_image->width);
-    printf("Height: %i\n", bmp_image->height);
-    printf("Bytes per pixel: %i\n", bmp_image->pixel_width);
 
     // Accessing and storing pixels
     unsigned char *pixel;
@@ -77,14 +72,19 @@ void read_bmp(struct Image *bmp_image) {
 
     free(pixel);
     fclose(bmp_image->image_file);
+
+    printf("bmp image read successfully.\n");
 }
 
-void write_bmp(struct Image image) {
+void write_bmp(struct Image *image) {
     /*
     * Writes to a specified file the contents of bmp_image.
     *
     * bmp_image: an Image struct containing information about the bmp_image to write
     */
+
+    printf("Writing result to bmp...\n");
+
     FILE *file;
     file = fopen("result.bmp", "wb");
 
@@ -95,7 +95,7 @@ void write_bmp(struct Image image) {
     fputc(0x42, file);
     fputc(0x4D, file);
     // Placehold for size of BMP file
-    unsigned int size = image.array_size + 54;
+    unsigned int size = image->array_size + 54;
     for(int i = 0; i < INT_BYTE_SIZE; i++) {
         fputc((size >> (i * 8)) & 0xFF, file);
     }
@@ -115,11 +115,11 @@ void write_bmp(struct Image image) {
     // TODO: Probably could move this to byte_helper
     // TODO: Check if system is big or little endian
     for(int i = 0; i < INT_BYTE_SIZE; i++) {
-        fputc(image.width >> i * 8 & 0xFF, file);
+        fputc(image->width >> i * 8 & 0xFF, file);
     }
     // Height
     for(int i = 0; i < INT_BYTE_SIZE; i++) {
-        fputc(image.height >> i * 8 & 0xFF, file);
+        fputc(image->height >> i * 8 & 0xFF, file);
     }
     // TODO: Probably could move this to byte_helper
     // TODO: Check if system is big or little endian
@@ -154,19 +154,20 @@ void write_bmp(struct Image image) {
     */
     int padding;
     
-    if (image.width % 4 == 0) {
+    if (image->width % 4 == 0) {
         padding = 0;
     } else {
-        padding = 4 - ((image.width * image.pixel_width) % 4); 
+        padding = 4 - ((image->width * image->pixel_width) % 4); 
     }
     
-    for (int i = 0; i < image.width; i++) {
-        for (int j = 0; j < image.height; j++) {
-            for (int k = 0; k < image.pixel_width; k++) {
-                fputc(image.pixel_array[i][j][k], file);
+    for (int i = 0; i < image->width; i++) {
+        for (int j = 0; j < image->height; j++) {
+            for (int k = 0; k < image->pixel_width; k++) {
+                fputc(image->pixel_array[i][j][k], file);
             }
         }
         write_blank_bytes(padding, file);
     }
     fclose(file);
+    printf("Result written successfully\n");
 }
