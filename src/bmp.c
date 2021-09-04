@@ -4,6 +4,7 @@
 
 #include "image.h"
 #include "byte_util.h"
+#include "logging_util.h"
 
 void read_bmp(struct Image *bmp_image) {
     /*
@@ -14,7 +15,7 @@ void read_bmp(struct Image *bmp_image) {
     */
     
     FILE *bmp_data = bmp_image->image_file;
-    printf("Reading bmp image to memory...\n");
+    log_message("Reading bmp image to memory...\n");
 
     fseek(bmp_data, 10, SEEK_SET);
     unsigned char offset_hex[4];
@@ -73,7 +74,7 @@ void read_bmp(struct Image *bmp_image) {
     free(pixel);
     fclose(bmp_image->image_file);
 
-    printf("bmp image read successfully.\n");
+    log_message("bmp image read successfully.\n");
 }
 
 void write_bmp(struct Image *image) {
@@ -83,7 +84,7 @@ void write_bmp(struct Image *image) {
     * bmp_image: an Image struct containing information about the bmp_image to write
     */
 
-    printf("Writing result to bmp...\n");
+    log_message("Writing result to bmp...\n");
 
     FILE *file;
     file = fopen("result.bmp", "wb");
@@ -169,5 +170,5 @@ void write_bmp(struct Image *image) {
         write_blank_bytes(padding, file);
     }
     fclose(file);
-    printf("Result written successfully\n");
+    log_message("Result written successfully\n");
 }

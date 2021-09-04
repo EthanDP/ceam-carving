@@ -2,6 +2,7 @@
 
 #include "image.h"
 #include "image_util.h"
+#include "logging_util.h"
 #include "kernel.h"
 
 Kernel create_blur_kernel();
@@ -11,7 +12,7 @@ void blur (struct Image *image, int strength) {
     *   Gaussian blur
     */
 
-    printf("Bluring image with strength %i...\n", strength);
+    log_message("Bluring image...\n");
 
     Kernel blur_kernel = create_blur_kernel(strength);
 
@@ -68,7 +69,7 @@ Kernel create_blur_kernel(int strength) {
     *   Gaussian blur
     */
 
-    printf("Generating blur kernel...\n");
+    log_message("Generating blur kernel...\n");
 
     Kernel gaussian_kernel;
     gaussian_kernel.kernel_size = 3;
