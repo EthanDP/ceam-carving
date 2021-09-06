@@ -1,13 +1,13 @@
 CC = gcc
 
 SRCDIR = ./src
-OBJDIR = obj
+OBJDIR = ./obj
 INCLUDE = ./src/include
 
 SRCS = $(wildcard $(SRCDIR)/*/*.c) $(wildcard $(SRCDIR)/*.c)
 
 _DEPS = $(wildcard $(INCLUDE)/*.h)
-DEPS = $(patsubst %,$(IDIR)/%.h,$(_DEPS))
+DEPS = $(patsubst $(INCLUDE)/%.h,$(INCLUDE)/%.h,$(_DEPS))
 
 OBJS = $(patsubst $(SRCDIR)/*/%.c $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 

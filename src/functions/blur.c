@@ -71,6 +71,9 @@ Kernel create_blur_kernel(int strength) {
 
     log_message("Generating blur kernel...\n");
 
+    double center_value = 1.0 - (double)strength / 100;
+    double outer_value = 1.0 * (1.0 - center_value)/8.0;
+
     Kernel gaussian_kernel;
     gaussian_kernel.kernel_size = 3;
     gaussian_kernel.kernel_array = malloc(gaussian_kernel.kernel_size * sizeof(*gaussian_kernel.kernel_array));
@@ -78,9 +81,9 @@ Kernel create_blur_kernel(int strength) {
         gaussian_kernel.kernel_array[i] = malloc(sizeof(double));
         for (int j = 0; j < gaussian_kernel.kernel_size; j++) {
             if (i == 1 && j == 1) {
-                gaussian_kernel.kernel_array[i][j] = .4;
+                gaussian_kernel.kernel_array[i][j] = center_value;
             } else {
-                gaussian_kernel.kernel_array[i][j] = .075;
+                gaussian_kernel.kernel_array[i][j] = outer_value;
             }
         }
     }
