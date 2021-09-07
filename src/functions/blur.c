@@ -57,6 +57,7 @@ void blur (struct Image *image, int strength) {
             for (int pixel_byte = 0; pixel_byte < image->pixel_width; pixel_byte++) {
                 new_byte = (unsigned char) new_pixel[pixel_byte];
                 image->pixel_array[i][j][pixel_byte] = new_byte;
+                //printf("Old value byte: %i and new value %i \n", temp.pixel_array[i][j][pixel_byte], image->pixel_array[i][j][pixel_byte]);
             }
         }
     }

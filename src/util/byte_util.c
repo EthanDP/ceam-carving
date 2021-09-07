@@ -4,7 +4,7 @@
 #include "byte_util.h"
 
 int compare_string(char string1[], char string2[]) {
-    if (sizeof(*string1) != sizeof(*string2)) {
+    if (strlen(string1) != strlen(string2)) {
         return 0;
     }
 

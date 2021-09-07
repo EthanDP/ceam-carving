@@ -22,12 +22,6 @@ int main(int argc, char *argv[]) {
         display_help();
     }
 
-    struct Image image = open_image(argv[1], strlen(argv[1]));
-    if (image.error_code == 1) {
-        printf("ERROR: File does not exist.\n");
-        return 1;
-    }
-
     int task = NONE;
     int parameters[8] = {0};
 
@@ -55,6 +49,12 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    struct Image image = open_image(argv[1], strlen(argv[1]));
+    if (image.error_code == 1) {
+        printf("ERROR: File does not exist.\n");
+        return 1;
+    }
+
     switch (task) {
         case BLUR:
             blur(&image, parameters[0]);
@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
             return 0;
         
         default:
-            printf("No function provided, aborting.");
+            printf("ERROR: No function provided, aborting.\n");
             break;
     }
 }

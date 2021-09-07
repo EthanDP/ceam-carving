@@ -4,6 +4,7 @@
 #include "image.h"
 #include "image_util.h"
 #include "byte_util.h"
+#include "logging_util.h"
 #include "bmp.h"
 
 struct Image open_image(char filename[], int size) {
@@ -14,6 +15,7 @@ struct Image open_image(char filename[], int size) {
     * filename: a string representing the input filename
     * size: the length of the filename
     */
+   
     struct Image image;
     FILE *file;
     if (file = fopen(filename, "rb")) {
