@@ -11,6 +11,7 @@ struct Image {
     int width;
     int height;
     int pixel_width;
+    int padding;
     int error_code;
     int array_size;
     unsigned char*** pixel_array;

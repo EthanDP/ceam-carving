@@ -66,6 +66,8 @@ void copy_image(struct Image *copy, struct Image original) {
     copy->pixel_width = original.pixel_width;
     copy->pixel_array = malloc(copy->width * sizeof(*copy->pixel_array));
 
+    printf("Comparing size of pixel arrays: %i %i %i and %i %i %i\n", original.width, original.height, original.pixel_width, copy->width, copy->height, copy->pixel_width);
+
     for (int i = 0; i < copy->width; i++) {
         copy->pixel_array[i] = malloc(copy->height * sizeof(*copy->pixel_array[i]));
 

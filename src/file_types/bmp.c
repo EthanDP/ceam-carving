@@ -44,6 +44,8 @@ void read_bmp(struct Image *bmp_image) {
         padding = 4 - ((bmp_image->width * bmp_image->pixel_width) % 4); 
     }
 
+    bmp_image->padding = padding;    
+
     // Accessing and storing pixels
     unsigned char *pixel;
     pixel = malloc(bmp_image->pixel_width * sizeof(unsigned char));
@@ -59,7 +61,6 @@ void read_bmp(struct Image *bmp_image) {
             bmp_image->pixel_array[i][j] = malloc(bmp_image->pixel_width * sizeof(*bmp_image->pixel_array[i][j]));
             fread(pixel, sizeof(unsigned char), 3, bmp_data);
 
-            // TODO: Modify for different size bmp pixels (16 bit, 8bit, etc.)
             for (int k = 0; k < bmp_image->pixel_width; k++) {
                 bmp_image->pixel_array[i][j][k] = pixel[k];
                 array_size++;
@@ -153,13 +154,6 @@ void write_bmp(struct Image *image) {
     /*
     * Image data
     */
-    int padding;
-    
-    if (image->width % 4 == 0) {
-        padding = 0;
-    } else {
-        padding = 4 - ((image->width * image->pixel_width) % 4); 
-    }
     
     for (int i = 0; i < image->width; i++) {
         for (int j = 0; j < image->height; j++) {
@@ -167,7 +161,7 @@ void write_bmp(struct Image *image) {
                 fputc(image->pixel_array[i][j][k], file);
             }
         }
-        write_blank_bytes(padding, file);
+        write_blank_bytes(image->padding, file);
     }
     fclose(file);
     log_message("Result written successfully\n");
