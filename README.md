@@ -11,8 +11,8 @@ make
 ./build <relative path to image> <function> [<parameters>] [<additional arguments>]
 ```
 
-###Blur
+### Blur
 `./build images/example.bmp --blur 50 10`
 
-###Verbose logging
+### Verbose logging
 `./build images/example.bmp --blur 50 10 -v`
