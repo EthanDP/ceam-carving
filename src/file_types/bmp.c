@@ -44,6 +44,8 @@ void read_bmp(struct Image *bmp_image) {
         padding = 4 - ((bmp_image->width * bmp_image->pixel_width) % 4); 
     }
 
+    printf("Current padding: %i\n", padding);
+
     bmp_image->padding = padding;    
 
     // Accessing and storing pixels
@@ -52,17 +54,28 @@ void read_bmp(struct Image *bmp_image) {
     int array_size = 0;
 
     fseek(bmp_data, offset, SEEK_SET);
-    bmp_image->pixel_array = malloc(bmp_image->width * sizeof(*bmp_image->pixel_array));
+    bmp_image->pixel_array = malloc(bmp_image->height * sizeof(*bmp_image->pixel_array));
 
-    for (int i = 0; i < bmp_image->width; i++) {
-        bmp_image->pixel_array[i] = malloc(bmp_image->height * sizeof(*bmp_image->pixel_array[i]));
+    /* Pixel array structured as follows:
+    *   [[pixel, pixel, pixel],
+    *   [pixel, pixel, pixel],
+    *   [pixel, pixel, pixel]]
+    * 
+    *   First index value refers to y coordinate (i.e. row)
+    *   Second index value refers to x coordinate (i.e. column)
+    * 
+    *   pixel_array[y][x][byte]
+    */
 
-        for (int j = 0; j < bmp_image->height; j++) {
-            bmp_image->pixel_array[i][j] = malloc(bmp_image->pixel_width * sizeof(*bmp_image->pixel_array[i][j]));
+    for (int y = 0; y < bmp_image->height; y++) {
+        bmp_image->pixel_array[y] = malloc(bmp_image->width * sizeof(*bmp_image->pixel_array[y]));
+
+        for (int x = 0; x < bmp_image->width; x++) {
+            bmp_image->pixel_array[y][x] = malloc(bmp_image->pixel_width * sizeof(*bmp_image->pixel_array[y][x]));
             fread(pixel, sizeof(unsigned char), 3, bmp_data);
 
-            for (int k = 0; k < bmp_image->pixel_width; k++) {
-                bmp_image->pixel_array[i][j][k] = pixel[k];
+            for (int byte_idx = 0; byte_idx < bmp_image->pixel_width; byte_idx++) {
+                bmp_image->pixel_array[y][x][byte_idx] = pixel[byte_idx];
                 array_size++;
             }
         }
@@ -75,7 +88,7 @@ void read_bmp(struct Image *bmp_image) {
     free(pixel);
     fclose(bmp_image->image_file);
 
-    log_message("bmp image read successfully.\n");
+    log_message("Bmp image read successfully.\n");
 }
 
 void write_bmp(struct Image *image) {
@@ -155,14 +168,15 @@ void write_bmp(struct Image *image) {
     * Image data
     */
     
-    for (int i = 0; i < image->width; i++) {
-        for (int j = 0; j < image->height; j++) {
-            for (int k = 0; k < image->pixel_width; k++) {
-                fputc(image->pixel_array[i][j][k], file);
+    for (int y = 0; y < image->height; y++) {
+        for (int x = 0; x < image->width; x++) {
+            for (int byte_idx = 0; byte_idx < image->pixel_width; byte_idx++) {
+                fputc(image->pixel_array[y][x][byte_idx], file);
             }
         }
         write_blank_bytes(image->padding, file);
     }
+
     fclose(file);
     log_message("Result written successfully\n");
 }

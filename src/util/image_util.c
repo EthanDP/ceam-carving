@@ -64,29 +64,27 @@ void copy_image(struct Image *copy, struct Image original) {
     copy->width = original.width;
     copy->height = original.height;
     copy->pixel_width = original.pixel_width;
-    copy->pixel_array = malloc(copy->width * sizeof(*copy->pixel_array));
+    copy->pixel_array = malloc(copy->height * sizeof(*copy->pixel_array));
 
-    printf("Comparing size of pixel arrays: %i %i %i and %i %i %i\n", original.width, original.height, original.pixel_width, copy->width, copy->height, copy->pixel_width);
+    for (int y = 0; y < copy->height; y++) {
+        copy->pixel_array[y] = malloc(copy->width * sizeof(*copy->pixel_array[y]));
 
-    for (int i = 0; i < copy->width; i++) {
-        copy->pixel_array[i] = malloc(copy->height * sizeof(*copy->pixel_array[i]));
-
-        for (int j = 0; j < copy->height; j++) {
-            copy->pixel_array[i][j] = malloc(copy->pixel_width * sizeof(*copy->pixel_array[i][j]));
+        for (int x = 0; x < copy->width; x++) {
+            copy->pixel_array[y][x] = malloc(copy->pixel_width * sizeof(*copy->pixel_array[y][x]));
 
             for (int k = 0; k < copy->pixel_width; k++) {
-                copy->pixel_array[i][j][k] = original.pixel_array[i][j][k];
+                copy->pixel_array[y][x][k] = original.pixel_array[y][x][k];
             }
         }
     }
 }
 
 void free_image(struct Image *image) {
-    for (int i = 0; i < image->width; i++) {
-        for(int j = 0; j < image->height; j++) {
-            free(image->pixel_array[i][j]);
+    for (int y = 0; y < image->height; y++) {
+        for(int x = 0; x < image->width; x++) {
+            free(image->pixel_array[y][x]);
         }
-        free(image->pixel_array[i]);
+        free(image->pixel_array[y]);
     }
     free(image->pixel_array);
 }

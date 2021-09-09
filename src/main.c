@@ -43,6 +43,8 @@ int main(int argc, char *argv[]) {
             }
         } else if (compare_string("-v", argv[i])){
             set_logging_mode(VERBOSE);
+        } else if (compare_string("--convert", argv[i])) {
+            task = CONVERT;
         } else {
             printf("Invalid argument %s\n", argv[i]);
             return 1;
@@ -61,6 +63,11 @@ int main(int argc, char *argv[]) {
             write_image(&image, "bmp");
             return 0;
         
+        case CONVERT:
+            printf("Should just be writing.\n");
+            write_image(&image, "bmp");
+            return 0;
+
         default:
             printf("ERROR: No function provided, aborting.\n");
             break;
