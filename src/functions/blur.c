@@ -5,14 +5,14 @@
 #include "logging_util.h"
 #include "kernel.h"
 
-Kernel create_blur_kernel();
+Kernel create_blur_kernel(int strength, int size);
 
-void blur (struct Image *image, int strength) {
+void blur (struct Image *image, int strength, int size) {
     /*
     *   Gaussian blur
     */
 
-    Kernel blur_kernel = create_blur_kernel(strength);
+    Kernel blur_kernel = create_blur_kernel(strength, size);
 
     // This image copy will be used to get original pixel values
     // and will not be modified.
@@ -66,29 +66,38 @@ void blur (struct Image *image, int strength) {
     }
 
     free_image(&temp);
-    printf("Making it past\n");
 }
 
-Kernel create_blur_kernel(int strength) {
+Kernel create_blur_kernel(int strength, int size) {
     /*
     *   Gaussian blur
     */
 
     log_message("Generating blur kernel...\n");
 
-    double center_value = 1.0 - (double)strength / 100;
-    double outer_value = 1.0 * (1.0 - center_value)/8.0;
-
     Kernel blur_kernel;
-    blur_kernel.kernel_size = 3;
+
+    if (size % 2 == 0) {
+        blur_kernel.kernel_size = size - 1;
+    } else {
+        blur_kernel.kernel_size = size;
+    }
+
+    double outer_points = blur_kernel.kernel_size * blur_kernel.kernel_size - 1;
+
+    double center_value = 1.0 - (double)strength / 100;
+    double outer_value = 1.0 * (1.0 - center_value)/outer_points;
+
+    int center = blur_kernel.kernel_size / 2;
+
     blur_kernel.kernel_array = malloc(blur_kernel.kernel_size * sizeof(*blur_kernel.kernel_array));
-    for (int i = 0; i < blur_kernel.kernel_size; i++) {
-        blur_kernel.kernel_array[i] = malloc(sizeof(double));
-        for (int j = 0; j < blur_kernel.kernel_size; j++) {
-            if (i == 1 && j == 1) {
-                blur_kernel.kernel_array[i][j] = center_value;
+    for (int y = 0; y < blur_kernel.kernel_size; y++) {
+        blur_kernel.kernel_array[y] = malloc(blur_kernel.kernel_size * sizeof(double));
+        for (int x = 0; x < blur_kernel.kernel_size; x++) {
+            if (y == center && x == center) {
+                blur_kernel.kernel_array[y][x] = center_value;
             } else {
-                blur_kernel.kernel_array[i][j] = outer_value;
+                blur_kernel.kernel_array[y][x] = outer_value;
             }
         }
     }

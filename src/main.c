@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     }
 
     int task = NONE;
-    int parameters[8] = {0};
+    int parameters[8];
 
     for (int i = 2; i < argc; i++) {
         if (compare_string("--blur", argv[i])) {
@@ -40,6 +40,22 @@ int main(int argc, char *argv[]) {
                 i += 1;
             } else {
                 parameters[0] = 25;
+                continue;
+            }
+
+            if (argc - i >= 1 && atoi(argv[i+1]) != 0) {
+                int blur_size = atoi(argv[i+1]);
+                if (blur_size >= 1 && blur_size <= 100) {
+                    parameters[1] = blur_size;
+                } else {
+                    printf("Invalid blur strength, must be 1-100.\n");
+                    return 1;
+                }
+                
+                i += 1;
+            } else {
+                parameters[1] = 5;
+                continue;
             }
         } else if (compare_string("-v", argv[i])){
             set_logging_mode(VERBOSE);
@@ -59,7 +75,7 @@ int main(int argc, char *argv[]) {
 
     switch (task) {
         case BLUR:
-            blur(&image, parameters[0]);
+            blur(&image, parameters[0], parameters[1]);
             write_image(&image, "bmp");
             return 0;
         

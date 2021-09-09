@@ -44,8 +44,6 @@ void read_bmp(struct Image *bmp_image) {
         padding = 4 - ((bmp_image->width * bmp_image->pixel_width) % 4); 
     }
 
-    printf("Current padding: %i\n", padding);
-
     bmp_image->padding = padding;    
 
     // Accessing and storing pixels
@@ -88,7 +86,7 @@ void read_bmp(struct Image *bmp_image) {
     free(pixel);
     fclose(bmp_image->image_file);
 
-    log_message("Bmp image read successfully.\n");
+    log_message("Bmp image read successfully\n");
 }
 
 void write_bmp(struct Image *image) {
