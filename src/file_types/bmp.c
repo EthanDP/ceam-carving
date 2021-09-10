@@ -23,12 +23,13 @@ void read_bmp(struct Image *bmp_image) {
     int offset = bytes_to_int(offset_hex, sizeof(offset_hex), LE);
 
     unsigned char header_size[4];
-    fread(header_size, sizeof(header_size), 1, bmp_data);
+    fread(header_size, sizeof(unsigned char), 4, bmp_data);
 
     unsigned char hex_width[4];
-    fread(hex_width, sizeof(hex_width), 1, bmp_data);
+    fread(hex_width, sizeof(unsigned char), 4, bmp_data);
+
     unsigned char hex_height[4];
-    fread(hex_height, sizeof(hex_height), 1, bmp_data);
+    fread(hex_height, sizeof(unsigned char), 4, bmp_data);
 
     bmp_image->width = bytes_to_int(hex_width, sizeof(hex_width), LE);
     bmp_image->height = bytes_to_int(hex_height, sizeof(hex_height), LE);
@@ -127,10 +128,14 @@ void write_bmp(struct Image *image) {
     // Width
     // TODO: Probably could move this to byte_helper
     // TODO: Check if system is big or little endian
+
+    printf("That width at this point: %i\n", image->width);
+
     for(int i = 0; i < INT_BYTE_SIZE; i++) {
         fputc(image->width >> i * 8 & 0xFF, file);
     }
     // Height
+    printf("That height at this point: %i\n", image->height);
     for(int i = 0; i < INT_BYTE_SIZE; i++) {
         fputc(image->height >> i * 8 & 0xFF, file);
     }

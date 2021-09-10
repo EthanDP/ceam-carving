@@ -20,15 +20,17 @@ int compare_string(char string1[], char string2[]) {
 int bytes_to_int(char bytes[], int size, int mode) {
     // Mode 0 = Little Endian, Mode 1 = Big Endian
 
-    int result = 0;
-    int temp;
+    unsigned int result = 0;
+    unsigned int temp;
 
     for (int i = 0; i < size; i++) {
         if (i != 0) {
-            temp = (int)bytes[i] * (256 * i);
+            temp = (unsigned int)(bytes[i] << (8 * i));
         }
         else {
-            temp = (int)bytes[i];
+            // For some reason requires a recast or it just stores an integer
+            // for some ungodly reason (filled with 1s up until the byte for the char)
+            temp = (unsigned char)bytes[i];
         }
         result += temp;
     }
