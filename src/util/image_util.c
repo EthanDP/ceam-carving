@@ -31,7 +31,7 @@ struct Image open_image(char filename[], int size) {
     int curr_index = 3;
     for (int i = size-1; i > 0; i--) {
         if (curr_index < 0) {
-            printf("Invalid Extension\n");
+            log_error("Invalid Extension");
             break;
         } else if ((int)filename[i] == (int)'.') {
             break;
@@ -44,7 +44,7 @@ struct Image open_image(char filename[], int size) {
     if (compare_string(extension, "@bmp")) {
         read_bmp(&image);
     } else {
-        printf("Invalid file type.");
+        log_error("Invalid file type.");
     }
 
     return image;

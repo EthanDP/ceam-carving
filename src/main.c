@@ -18,7 +18,7 @@ int main(int argc, char *argv[]) {
     *   Argument handling and invalid argument logging
     */
     if (argc <= 1) {
-        printf("Not enough arguments provided.");
+        log_error("Not enough arguments provided.");
         display_help();
     }
 
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
                 if (blur_strength >= 1 && blur_strength <= 100) {
                     parameters[0] = blur_strength;
                 } else {
-                    printf("Invalid blur strength, must be 1-100.\n");
+                    log_error("Invalid blur strength, must be 1-100.");
                     return 1;
                 }
                 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
                 if (blur_size >= 1 && blur_size <= 100) {
                     parameters[1] = blur_size;
                 } else {
-                    printf("Invalid blur strength, must be 1-100.\n");
+                    log_error("Invalid blur size, must be 1-100.");
                     return 1;
                 }
                 
@@ -62,7 +62,8 @@ int main(int argc, char *argv[]) {
         } else if (compare_string("--convert", argv[i])) {
             task = CONVERT;
         } else {
-            printf("Invalid argument %s\n", argv[i]);
+            log_error("Invalid argument");
+            display_help();
             return 1;
         }
     }

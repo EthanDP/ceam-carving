@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "byte_util.h"
+#include "image.h"
 
 int compare_string(char string1[], char string2[]) {
     if (strlen(string1) != strlen(string2)) {
@@ -17,7 +18,7 @@ int compare_string(char string1[], char string2[]) {
     return 1;
 }
 
-int bytes_to_int(char bytes[], int size, int mode) {
+int bytes_to_int(byte bytes[], int size, int mode) {
     // Mode 0 = Little Endian, Mode 1 = Big Endian
 
     unsigned int result = 0;
@@ -30,7 +31,7 @@ int bytes_to_int(char bytes[], int size, int mode) {
         else {
             // For some reason requires a recast or it just stores an integer
             // for some ungodly reason (filled with 1s up until the byte for the char)
-            temp = (unsigned char)bytes[i];
+            temp = (byte)bytes[i];
         }
         result += temp;
     }
@@ -38,7 +39,7 @@ int bytes_to_int(char bytes[], int size, int mode) {
     return result;
 }
 
-void printx(char bytes[], int size, int mode) {
+void printx(byte bytes[], int size, int mode) {
     // Mode 0 = Litle Endian, Mode 1 = Big Endian
     if (mode == 1) {
         for (int i = size - 1; i >= 0; i--) {
@@ -51,7 +52,7 @@ void printx(char bytes[], int size, int mode) {
     } 
     else {
         for (int i = 0; i < size; i++) {
-            printf("%02x", (unsigned char)bytes[i]);
+            printf("%02x", (byte)bytes[i]);
             if ((i-1) % 2 == 0) {
                 printf(" ");
             }

@@ -6,5 +6,6 @@
 
 int set_logging_mode(int value);
 void log_message(char *message);
+void log_error(char *message);
 
 #endif

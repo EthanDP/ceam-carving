@@ -17,19 +17,29 @@ void read_bmp(struct Image *bmp_image) {
     FILE *bmp_data = bmp_image->image_file;
     log_message("Reading bmp image to memory...\n");
 
+    fseek(bmp_data, 0, SEEK_SET);
+    byte bmp_identifier[2];
+    fread(bmp_identifier, sizeof(byte), 2, bmp_data);
+
+    if (bmp_identifier[0] != 0x42 && bmp_identifier[1] != 0x4d) {
+        log_error("Invalid bmp file identifier");
+        bmp_image->error_code = INVALID_TYPE;
+        return;
+    }
+
     fseek(bmp_data, 10, SEEK_SET);
-    unsigned char offset_hex[4];
+    byte offset_hex[4];
     fread(offset_hex, sizeof(offset_hex), 1, bmp_data);
     int offset = bytes_to_int(offset_hex, sizeof(offset_hex), LE);
 
-    unsigned char header_size[4];
-    fread(header_size, sizeof(unsigned char), 4, bmp_data);
+    byte header_size[4];
+    fread(header_size, sizeof(byte), 4, bmp_data);
 
-    unsigned char hex_width[4];
-    fread(hex_width, sizeof(unsigned char), 4, bmp_data);
+    byte hex_width[4];
+    fread(hex_width, sizeof(byte), 4, bmp_data);
 
-    unsigned char hex_height[4];
-    fread(hex_height, sizeof(unsigned char), 4, bmp_data);
+    byte hex_height[4];
+    fread(hex_height, sizeof(byte), 4, bmp_data);
 
     bmp_image->width = bytes_to_int(hex_width, sizeof(hex_width), LE);
     bmp_image->height = bytes_to_int(hex_height, sizeof(hex_height), LE);
@@ -48,8 +58,8 @@ void read_bmp(struct Image *bmp_image) {
     bmp_image->padding = padding;    
 
     // Accessing and storing pixels
-    unsigned char *pixel;
-    pixel = malloc(bmp_image->pixel_width * sizeof(unsigned char));
+    byte *pixel;
+    pixel = malloc(bmp_image->pixel_width * sizeof(byte));
     int array_size = 0;
 
     fseek(bmp_data, offset, SEEK_SET);
@@ -71,7 +81,7 @@ void read_bmp(struct Image *bmp_image) {
 
         for (int x = 0; x < bmp_image->width; x++) {
             bmp_image->pixel_array[y][x] = malloc(bmp_image->pixel_width * sizeof(*bmp_image->pixel_array[y][x]));
-            fread(pixel, sizeof(unsigned char), 3, bmp_data);
+            fread(pixel, sizeof(byte), 3, bmp_data);
 
             for (int byte_idx = 0; byte_idx < bmp_image->pixel_width; byte_idx++) {
                 bmp_image->pixel_array[y][x][byte_idx] = pixel[byte_idx];

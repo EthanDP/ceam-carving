@@ -16,3 +16,7 @@ void log_message(char *message) {
 
     printf("%s", message);
 }
+
+void log_error(char *error) {
+    printf("ERROR: %s\n", error);
+}

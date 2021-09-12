@@ -1,10 +1,13 @@
 #include <stdio.h>
+#include <stdint.h>
 
 #ifndef IMAGE_HEADER
 #define IMAGE_HEADER
 
 #define NO_ERROR 0
 #define INVALID_FILENAME 1
+
+typedef uint8_t byte;
 
 struct Image {
     FILE *image_file;
@@ -14,7 +17,11 @@ struct Image {
     int padding;
     int error_code;
     int array_size;
-    unsigned char*** pixel_array;
+    byte*** pixel_array;
 };
+
+// Error codes
+#define SUCCESS 0
+#define INVALID_TYPE 2
 
 #endif

@@ -59,7 +59,7 @@ void blur (struct Image *image, int strength, int size) {
             }
 
             for (int byte_idx = 0; byte_idx < image->pixel_width; byte_idx++) {
-                new_byte = (unsigned char) new_pixel[byte_idx];
+                new_byte = (byte) new_pixel[byte_idx];
                 image->pixel_array[y][x][byte_idx] = new_byte;
             }
         }
