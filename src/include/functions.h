@@ -2,7 +2,8 @@
 #define FUNCTIONS_HEADER
 
 #define NONE 0
-#define BLUR 1
-#define CONVERT 2
+#define CONVERT 1
+#define BLUR 2
+#define SHARPEN 3
 
 #endif
