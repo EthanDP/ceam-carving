@@ -62,10 +62,10 @@ int main(int argc, char *argv[]) {
             task = SHARPEN;
             if (argc - i > 1 && atoi(argv[i+1]) != 0) {
                 int sharpen_strength = atoi(argv[i+1]);
-                if (sharpen_strength >= 1 && sharpen_strength <= 10) {
+                if (sharpen_strength >= 1 && sharpen_strength <= 100) {
                     parameters[0] = sharpen_strength;
                 } else {
-                    log_error("Invalid sharpen strength, must be 1-10.");
+                    log_error("Invalid sharpen strength, must be 1-100.");
                     return 1;
                 }
                 

@@ -4,13 +4,14 @@
 #include "image_util.h"
 #include "logging_util.h"
 #include "kernel.h"
+#include "functions.h"
 
 Kernel create_sharpen_kernel(int strength, int size);
 
 void sharpen (struct Image *image, int strength, int size) {
     Kernel sharpen_kernel = create_sharpen_kernel(strength, size);
     log_message("Sharpening image...\n");
-    apply_kernel(image, sharpen_kernel);
+    apply_kernel(image, sharpen_kernel, SHARPEN);
 }
 
 Kernel create_sharpen_kernel(int strength, int size) {
@@ -26,7 +27,7 @@ Kernel create_sharpen_kernel(int strength, int size) {
 
     double outer_points = sharpen_kernel.kernel_size * sharpen_kernel.kernel_size - 1;
 
-    double center_value = strength;
+    double center_value = 1.0 + (strength / 10.0);
     double outer_value = -1.0 * (center_value - 1)/outer_points;
 
     int center = sharpen_kernel.kernel_size / 2;

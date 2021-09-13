@@ -6,6 +6,6 @@ typedef struct Kernels {
     int kernel_size;
 } Kernel;
 
-void apply_kernel(struct Image *image, Kernel kernel);
+void apply_kernel(struct Image *image, Kernel kernel, int mode);
 
 #endif

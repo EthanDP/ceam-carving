@@ -4,6 +4,7 @@
 #include "image_util.h"
 #include "logging_util.h"
 #include "kernel.h"
+#include "functions.h"
 
 Kernel create_blur_kernel(int strength, int size);
 
@@ -15,7 +16,7 @@ void blur (struct Image *image, int strength, int size) {
     Kernel blur_kernel = create_blur_kernel(strength, size);
     log_message("Bluring image...\n");
 
-    apply_kernel(image, blur_kernel);
+    apply_kernel(image, blur_kernel, 0);
 }
 
 Kernel create_blur_kernel(int strength, int size) {

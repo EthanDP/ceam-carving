@@ -4,8 +4,9 @@
 #include "image_util.h"
 #include "logging_util.h"
 #include "kernel.h"
+#include "functions.h"
 
-void apply_kernel(struct Image *image, Kernel kernel) {
+void apply_kernel(struct Image *image, Kernel kernel, int mode) {
     // This image copy will be used to get original pixel values
     // and will not be modified.
     struct Image temp;
@@ -14,7 +15,7 @@ void apply_kernel(struct Image *image, Kernel kernel) {
     double *new_pixel;
     new_pixel = malloc(image->pixel_width * sizeof(double));
 
-    unsigned char new_byte;
+    byte new_byte;
 
     // Stores the position of a kernel point relative to the image
     int current_y;
@@ -51,7 +52,18 @@ void apply_kernel(struct Image *image, Kernel kernel) {
             }
 
             for (int byte_idx = 0; byte_idx < image->pixel_width; byte_idx++) {
-                new_byte = (byte) new_pixel[byte_idx];
+                if (mode == BLUR) {
+                    new_byte = (byte) new_pixel[byte_idx];
+                } else if (mode == SHARPEN) {
+                    int int_byte = (int) new_pixel[byte_idx];
+                    if (int_byte > 255) {
+                        new_byte = 255;
+                    } else if (int_byte < 0) {
+                        new_byte = 0;
+                    } else {
+                        new_byte = (byte) int_byte;
+                    }
+                }
                 image->pixel_array[y][x][byte_idx] = new_byte;
             }
         }
