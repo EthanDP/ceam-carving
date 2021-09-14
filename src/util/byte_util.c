@@ -1,22 +1,7 @@
 #include <stdio.h>
-#include <string.h>
 
 #include "byte_util.h"
 #include "image.h"
-
-int compare_string(char string1[], char string2[]) {
-    if (strlen(string1) != strlen(string2)) {
-        return 0;
-    }
-
-    for (int i = 0; i < sizeof(*string1); i++) {
-        if (string1[i] != string2[i]) {
-            return 0;
-        }
-    }
-
-    return 1;
-}
 
 int bytes_to_int(byte bytes[], int size, int mode) {
     // Mode 0 = Little Endian, Mode 1 = Big Endian

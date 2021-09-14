@@ -2,15 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "image.h"
 #include "functions.h"
 
-#include "image_util.h"
-#include "byte_util.h"
+#include "main_util.h"
 #include "logging_util.h"
-
-#include "blur.h"
-#include "sharpen.h"
 
 void display_help();
 
@@ -27,7 +22,7 @@ int main(int argc, char *argv[]) {
     int parameters[8];
 
     for (int i = 2; i < argc; i++) {
-        if (compare_string("--blur", argv[i])) {
+        if (strcmp("--blur", argv[i]) == 0) {
             task = BLUR;
             if (argc - i > 1 && atoi(argv[i+1]) != 0) {
                 int blur_strength = atoi(argv[i+1]);
@@ -58,7 +53,7 @@ int main(int argc, char *argv[]) {
                 parameters[1] = 5;
                 continue;
             }
-        } else if (compare_string("--sharpen", argv[i])) {
+        } else if (strcmp("--sharpen", argv[i]) == 0) {
             task = SHARPEN;
             if (argc - i > 1 && atoi(argv[i+1]) != 0) {
                 int sharpen_strength = atoi(argv[i+1]);
@@ -89,9 +84,18 @@ int main(int argc, char *argv[]) {
                 parameters[1] = 5;
                 continue;
             }
-        } else if (compare_string("-v", argv[i])){
+        } else if (strcmp("--mushroomify", argv[i]) == 0) {
+            task = MUSHROOMIFY;
+            if (argc - i > 1 && atoi(argv[i+1]) != 0) {
+                parameters[0] = atoi(argv[i+1]);
+                i += 1;
+            } else {
+                parameters[0] = 50;
+                continue;
+            }
+        } else if (strcmp("-v", argv[i]) == 0){
             set_logging_mode(VERBOSE);
-        } else if (compare_string("--convert", argv[i])) {
+        } else if (strcmp("--convert", argv[i]) == 0) {
             task = CONVERT;
         } else {
             log_error("Invalid argument");
@@ -100,31 +104,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    struct Image image = open_image(argv[1], strlen(argv[1]));
-    if (image.error_code == 1) {
-        log_error("ERROR: File does not exist.");
-        return 1;
-    }
-
-    switch (task) {
-        case BLUR:
-            blur(&image, parameters[0], parameters[1]);
-            write_image(&image, "bmp");
-            return 0;
-        
-        case SHARPEN:
-            sharpen(&image, parameters[0], parameters[1]);
-            write_image(&image, "bmp");
-            return 0;
-
-        case CONVERT:
-            write_image(&image, "bmp");
-            return 0;
-
-        default:
-            log_error("ERROR: No function provided, aborting.");
-            return 1;
-    }
+    run_task(argv[1], parameters, task, strlen(argv[1]));
 }
 
 void display_help() {

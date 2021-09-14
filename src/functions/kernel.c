@@ -52,10 +52,10 @@ void apply_kernel(struct Image *image, Kernel kernel, int mode) {
             }
 
             for (int byte_idx = 0; byte_idx < image->pixel_width; byte_idx++) {
-                if (mode == BLUR) {
-                    new_byte = (byte) new_pixel[byte_idx];
+                int int_byte = (int) new_pixel[byte_idx];
+                if (mode == BLUR || mode == MUSHROOMIFY) {
+                    new_byte = (byte) int_byte;
                 } else if (mode == SHARPEN) {
-                    int int_byte = (int) new_pixel[byte_idx];
                     if (int_byte > 255) {
                         new_byte = 255;
                     } else if (int_byte < 0) {
@@ -64,6 +64,7 @@ void apply_kernel(struct Image *image, Kernel kernel, int mode) {
                         new_byte = (byte) int_byte;
                     }
                 }
+
                 image->pixel_array[y][x][byte_idx] = new_byte;
             }
         }

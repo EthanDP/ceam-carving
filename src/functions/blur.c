@@ -16,7 +16,7 @@ void blur (struct Image *image, int strength, int size) {
     Kernel blur_kernel = create_blur_kernel(strength, size);
     log_message("Bluring image...\n");
 
-    apply_kernel(image, blur_kernel, 0);
+    apply_kernel(image, blur_kernel, BLUR);
 }
 
 Kernel create_blur_kernel(int strength, int size) {

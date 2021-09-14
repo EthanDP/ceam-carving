@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "image.h"
 #include "image_util.h"
@@ -15,7 +16,7 @@ struct Image open_image(char filename[], int size) {
     * filename: a string representing the input filename
     * size: the length of the filename
     */
-   
+
     struct Image image;
     FILE *file;
     if (file = fopen(filename, "rb")) {
@@ -41,7 +42,7 @@ struct Image open_image(char filename[], int size) {
         }
     }
 
-    if (compare_string(extension, "@bmp")) {
+    if (strcmp(extension, "@bmp") == 0) {
         read_bmp(&image);
     } else {
         log_error("Invalid file type.");
@@ -52,7 +53,7 @@ struct Image open_image(char filename[], int size) {
 
 void write_image(struct Image *image, char filetype[]) {
     // TODO: Check for different filetypes and call specific function accordingly
-    if (compare_string(filetype, "bmp")) {
+    if (strcmp(filetype, "bmp") == 0) {
         write_bmp(image);
     } 
 
