@@ -8,6 +8,7 @@
 #include "functions.h"
 #include "blur.h"
 #include "sharpen.h"
+#include "edge_detect.h"
 #include "mushroomify.h"
 
 void run_task(char filename[], int parameters[], int task, int length) {
@@ -29,6 +30,11 @@ void run_task(char filename[], int parameters[], int task, int length) {
             return;
 
         case CONVERT:
+            write_image(&image, "bmp");
+            return;
+
+        case EDGE_DETECT:
+            detect_edges(&image);
             write_image(&image, "bmp");
             return;
 

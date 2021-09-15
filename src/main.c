@@ -97,6 +97,8 @@ int main(int argc, char *argv[]) {
             set_logging_mode(VERBOSE);
         } else if (strcmp("--convert", argv[i]) == 0) {
             task = CONVERT;
+        } else if (strcmp("--edges", argv[i]) == 0) {
+            task = EDGE_DETECT;
         } else {
             log_error("Invalid argument");
             display_help();

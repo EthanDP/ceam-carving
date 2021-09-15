@@ -32,8 +32,8 @@ void apply_kernel(struct Image *image, Kernel kernel, int mode) {
             }
 
             // These two loops iterate over each position in the kernel
-            for (int kernel_y = 0; kernel_y < kernel.kernel_size; kernel_y++) {
-                for (int kernel_x = 0; kernel_x < kernel.kernel_size; kernel_x++) {
+            for (int kernel_y = 0; kernel_y < kernel.size; kernel_y++) {
+                for (int kernel_x = 0; kernel_x < kernel.size; kernel_x++) {
 
                     current_y = y - (kernel_y - 1);
                     current_x = x - (kernel_x - 1);
@@ -53,16 +53,16 @@ void apply_kernel(struct Image *image, Kernel kernel, int mode) {
 
             for (int byte_idx = 0; byte_idx < image->pixel_width; byte_idx++) {
                 int int_byte = (int) new_pixel[byte_idx];
-                if (mode == BLUR || mode == MUSHROOMIFY) {
-                    new_byte = (byte) int_byte;
-                } else if (mode == SHARPEN) {
-                    if (int_byte > 255) {
-                        new_byte = 255;
-                    } else if (int_byte < 0) {
+                if (mode == SHARPEN || mode == EDGE_DETECT) {
+                    if (int_byte < 0) {
                         new_byte = 0;
+                    } else if (int_byte > 255) {
+                        new_byte = 255;
                     } else {
                         new_byte = (byte) int_byte;
                     }
+                } else {
+                    new_byte = (byte) int_byte;
                 }
 
                 image->pixel_array[y][x][byte_idx] = new_byte;

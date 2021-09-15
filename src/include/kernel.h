@@ -3,7 +3,7 @@
 
 typedef struct Kernels {
     double **kernel_array;
-    int kernel_size;
+    int size;
 } Kernel;
 
 void apply_kernel(struct Image *image, Kernel kernel, int mode);
