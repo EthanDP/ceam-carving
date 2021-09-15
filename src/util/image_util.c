@@ -61,10 +61,10 @@ void write_image(struct Image *image, char filetype[]) {
     // TODO: Add output checking to main.c so invalid output filetypes can't be used
 }
 
-void copy_image(struct Image *copy, struct Image original) {
-    copy->width = original.width;
-    copy->height = original.height;
-    copy->pixel_width = original.pixel_width;
+void copy_image(struct Image *copy, struct Image *original) {
+    copy->width = original->width;
+    copy->height = original->height;
+    copy->pixel_width = original->pixel_width;
     copy->pixel_array = malloc(copy->height * sizeof(*copy->pixel_array));
 
     for (int y = 0; y < copy->height; y++) {
@@ -74,7 +74,30 @@ void copy_image(struct Image *copy, struct Image original) {
             copy->pixel_array[y][x] = malloc(copy->pixel_width * sizeof(*copy->pixel_array[y][x]));
 
             for (int k = 0; k < copy->pixel_width; k++) {
-                copy->pixel_array[y][x][k] = original.pixel_array[y][x][k];
+                copy->pixel_array[y][x][k] = original->pixel_array[y][x][k];
+            }
+        }
+    }
+}
+
+void sum_images(struct Image *image1, struct Image *image2) {
+    /*
+    *   Sums the byte values of each pixel in two images and stores
+    *   the new values in image1.
+    */
+    if (image1->height != image2->height || image1->width != image2->width) {
+        log_error("Images to be summed do not have equal size");
+    }
+
+    for (int y = 0; y < image1->height; y++) {
+        for (int x = 0; x < image1->width; x++) {
+            for (int k = 0; k < image1->pixel_width; k++) {
+                int sum = image1->pixel_array[y][x][k] + image2->pixel_array[y][x][k];
+                if (sum > 255) {
+                    image1->pixel_array[y][x][k] = 255;
+                } else {
+                    image1->pixel_array[y][x][k] = (char) sum;
+                }
             }
         }
     }

@@ -7,10 +7,15 @@
 #include "functions.h"
 
 void apply_kernel(struct Image *image, Kernel kernel, int mode) {
+    /*
+    *   Applies a convolution to an image using a provided kernel and
+    *   a specified mode
+    */
+
     // This image copy will be used to get original pixel values
     // and will not be modified.
     struct Image temp;
-    copy_image(&temp, *image);
+    copy_image(&temp, image);
 
     double *new_pixel;
     new_pixel = malloc(image->pixel_width * sizeof(double));
