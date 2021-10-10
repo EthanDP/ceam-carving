@@ -14,8 +14,7 @@ void apply_kernel(struct Image *image, Kernel kernel, int mode) {
 
     // This image copy will be used to get original pixel values
     // and will not be modified.
-    struct Image temp;
-    copy_image(&temp, image);
+    struct Image temp = copy_image(image);;
 
     double *new_pixel;
     new_pixel = malloc(image->pixel_width * sizeof(double));
@@ -69,11 +68,11 @@ void apply_kernel(struct Image *image, Kernel kernel, int mode) {
                 } else {
                     new_byte = (byte) int_byte;
                 }
-
+                
                 image->pixel_array[y][x][byte_idx] = new_byte;
             }
         }
     }
-
+    
     free_image(&temp);
 }

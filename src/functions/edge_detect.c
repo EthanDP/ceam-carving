@@ -15,8 +15,7 @@ void detect_edges(struct Image *image) {
 
     populate_kernels(&vertical_kernel, &horizontal_kernel);
 
-    struct Image copy;
-    copy_image(&copy, image);
+    struct Image copy = copy_image(image);;
 
     log_message("Detecting edges...\n");
 

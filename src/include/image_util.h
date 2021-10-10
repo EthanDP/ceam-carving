@@ -5,7 +5,7 @@
 
 struct Image open_image(char filename[], int size);
 void write_image(struct Image *image, char filetype[]);
-void copy_image(struct Image *copy, struct Image *original);
+struct Image copy_image(struct Image *original);
 void sum_images(struct Image *image1, struct Image *image2);
 void free_image(struct Image *image);
 

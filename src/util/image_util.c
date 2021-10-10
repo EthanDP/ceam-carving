@@ -61,22 +61,26 @@ void write_image(struct Image *image, char filetype[]) {
     // TODO: Add output checking to main.c so invalid output filetypes can't be used
 }
 
-void copy_image(struct Image *copy, struct Image *original) {
-    copy->width = original->width;
-    copy->height = original->height;
-    copy->pixel_width = original->pixel_width;
-    copy->pixel_array = malloc(copy->height * sizeof(*copy->pixel_array));
+struct Image copy_image(struct Image *original) {
+    struct Image copy;
+    copy.width = original->width;
+    copy.height = original->height;
+    copy.pixel_width = original->pixel_width;
 
-    for (int y = 0; y < copy->height; y++) {
-        copy->pixel_array[y] = malloc(copy->width * sizeof(*copy->pixel_array[y]));
+    copy.pixel_array = malloc(copy.height * sizeof(*copy.pixel_array));
+    printf("Does it get past the initial malloc?\n");
+    for (int y = 0; y < copy.height; y++) {
+        copy.pixel_array[y] = malloc(copy.width * sizeof(*copy.pixel_array[y]));
+        printf("Does it even do this?\n");
 
-        for (int x = 0; x < copy->width; x++) {
-            copy->pixel_array[y][x] = malloc(copy->pixel_width * sizeof(*copy->pixel_array[y][x]));
+        for (int x = 0; x < copy.width; x++) {
+            copy.pixel_array[y][x] = malloc(copy.pixel_width * sizeof(*copy.pixel_array[y][x]));
 
-            for (int k = 0; k < copy->pixel_width; k++) {
-                copy->pixel_array[y][x][k] = original->pixel_array[y][x][k];
+            for (int k = 0; k < copy.pixel_width; k++) {
+                copy.pixel_array[y][x][k] = original->pixel_array[y][x][k];
             }
         }
+        printf("How many times\n");
     }
 }
 
@@ -110,5 +114,5 @@ void free_image(struct Image *image) {
         }
         free(image->pixel_array[y]);
     }
-    free(image->pixel_array);
+    printf("How many any\n");
 }
